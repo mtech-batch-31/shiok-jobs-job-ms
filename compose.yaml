@@ -8,8 +8,10 @@ services:
       - 'MYSQL_USER=myuser'
     ports:
       - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
-      springboot-mysql-network:
+      - springboot-mysql-network
 
   ms:
     depends_on:
@@ -18,12 +20,16 @@ services:
       context: ./
       dockerfile: dockerfile
     ports:
-      - "8888:8888"
+      - '8888:8080'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/job?autoReconnect=true&useSSL=false
     restart: on-failure
     networks:
-      springboot-mysql-network:
-
-
+      - springboot-mysql-network
 
 networks:
   springboot-mysql-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
