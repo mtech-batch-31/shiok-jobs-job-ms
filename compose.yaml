@@ -1,0 +1,29 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=job'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=myuser'
+    ports:
+      - '3306:3306'
+    networks:
+      springboot-mysql-network:
+
+  ms:
+    depends_on:
+      - mysql
+    build:
+      context: ./
+      dockerfile: dockerfile
+    ports:
+      - "8888:8888"
+    restart: on-failure
+    networks:
+      springboot-mysql-network:
+
+
+
+networks:
+  springboot-mysql-network:
