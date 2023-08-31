@@ -1,0 +1,216 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+permissions: write-all
+
+env:
+  AWS_REGION: ap-southeast-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}:${{ github.sha }}
+
+jobs:
+  tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the codes
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available
+
+      # cache Gradle packages
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      # Run all unit tests
+      - name: Run unit tests
+        run: ./gradlew test
+
+  generate_jar:
+    needs: code_scan
+    name: Generate Jar File
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check_and_build
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - run: ./gradlew bootJar
+
+      - name: Upload Project Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: spring-boot-artifact
+          path: |
+            build/libs/shiok_jobs_job_ms.jar
+            build/reports
+
+  build_and_push_image:
+    needs: generate_jar
+    name: Push Docker Image to ECR
+    runs-on: ubuntu-latest
+    env:
+      LATEST_IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: spring-boot-artifact
+          path: build
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}
+            ${{ env.LATEST_IMAGE_NAME }}
+
+  deploy_to_ecs:
+    name: Deploy to ECS
+    needs: build_and_push_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: aws/task-definition.json
+          container-name: service
+          image: ${{ env.IMAGE_NAME }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: waste-recycler-v4
+          cluster: waste-recycler
+          wait-for-service-stability: false
+
+  code_scan:
+    needs: tests
+    name: Analyze with SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew build sonar --info
+
+      - name: Get SonarCloud quality gate status
+        run: |
+          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}": "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.PROJECT_KEY }}" | jq -r .projectStatus.status)
+          echo "Quality gate status is $STATUS"   
+          if [[ "$STATUS" != "OK" ]]; then
+          echo "Quality gate failed"
+            exit 1            
+          fi      
+
+      - name: Upload Code Coverage Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-artifact
+          path: |
+            build/reports/jacoco/test/html/
+
+      - name: Upload Lint (Checkstyle) Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-artifact
+          path: |
+            build/reports/checkstyle/
+
+      - name: Upload SonarCloud Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: sast-artifact
+          path: |
+            build/sonar/report-task.txt
+
+# will continue zap scan later
+#  zap_scan:
+#    needs: deploy_to_ecs
+#    runs-on: ubuntu-latest
+#    name: Zap Scan
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          ref: main
+#
+#      - name: ZAP Scan
+#        uses: zaproxy/action-full-scan@v0.4.0
+#        with:
+#          target: 'http://recycler-service-1183649220.ap-southeast-1.elb.amazonaws.com/'

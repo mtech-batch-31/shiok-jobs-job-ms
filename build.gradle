@@ -45,3 +45,42 @@ bootJar {
 	archiveFileName = "shiok_jobs_job_ms.jar"
 	archiveClassifier.set(null)
 }
+
+jacocoTestReport {
+	dependsOn test
+
+	reports {
+		xml.required = true
+	}
+
+	afterEvaluate {
+		excludedClassFilesForReport(classDirectories)
+	}
+}
+
+private excludedClassFilesForReport(classDirectories) {
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, exclude: [
+				'**/entity/*.class',
+				'**/dto/**/*.class',
+				'**/model/**/*.class',
+				'**/helper/*.class',
+				'**/exception/*.class',
+				'**/constant/*.class',
+				'**/helper/DataSeeder*.class',
+				'**/Application.class'
+		])
+	}))
+}
+
+
+
+sonarqube {
+
+	properties {
+		property "sonar.projectKey", "mtech-batch-31_shiok-jobs-user-ms"
+		property "sonar.organization", "mtech-batch-31"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+	}
+}
