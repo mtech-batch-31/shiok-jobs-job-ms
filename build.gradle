@@ -26,61 +26,41 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	//testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+checkstyle {
+	toolVersion = "10.10.0"
+	configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+	ignoreFailures = true
+
+	checkstyleMain {
+		source ='src/main/java'
+	}
+
+	checkstyleTest {
+		source ='src/test/java'
+	}
+}
+
 bootJar {
 	archiveFileName = "shiok_jobs_job_ms.jar"
 	archiveClassifier.set(null)
-}
-
-jacocoTestReport {
-	dependsOn test
-
-	reports {
-		xml.required = true
-	}
-
-	afterEvaluate {
-		excludedClassFilesForReport(classDirectories)
-	}
-}
-
-private excludedClassFilesForReport(classDirectories) {
-	classDirectories.setFrom(files(classDirectories.files.collect {
-		fileTree(dir: it, exclude: [
-				'**/entity/*.class',
-				'**/dto/**/*.class',
-				'**/model/**/*.class',
-				'**/helper/*.class',
-				'**/exception/*.class',
-				'**/constant/*.class',
-				'**/helper/DataSeeder*.class',
-				'**/Application.class'
-		])
-	}))
-}
-
-
-
-sonarqube {
-
-	properties {
-		property "sonar.projectKey", "mtech-batch-31_shiok-jobs-user-ms"
-		property "sonar.organization", "mtech-batch-31"
-		property "sonar.host.url", "https://sonarcloud.io"
-		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-	}
 }
