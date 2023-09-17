@@ -1,7 +1,6 @@
 package com.mtech.sjmsjob.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Builder
 public class Job {
 
     @Id
