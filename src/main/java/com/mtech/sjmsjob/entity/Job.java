@@ -1,6 +1,7 @@
 package com.mtech.sjmsjob.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Job {
 
     @Id
@@ -20,21 +22,23 @@ public class Job {
 
     private String jobTitle;
 
+    @Column(columnDefinition = "TEXT")
     private String jobSummary;
 
     private String jobCategory;
 
-    private String qualification;
+    private String level;
 
-    private String skillRequired;
+    private String skills;
 
     private String employmentType;
 
-    private String workLocation;
+    private String location;
 
     private String workHours;
 
-    private String salaryRange;
+    private Float minSalary;
+    private Float maxSalary;
 
     private Date postedDate;
 

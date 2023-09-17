@@ -1,6 +1,7 @@
 package com.mtech.sjmsjob.service;
 
 import com.mtech.sjmsjob.mappers.JobMapper;
+import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.repository.JobRepository;
@@ -16,13 +17,19 @@ public class JobServiceImpl implements JobService {
         this.jobRepository = jobRepository;
     }
 
-    public Iterable<Job> listJobs() {
+    public Iterable<JobSummaryDto> listJobs() {
         var jobs = this.jobRepository.findAll();
-        ArrayList<JobSummaryDto> result = new ArrayList<JobSummaryDto>();
+        ArrayList<JobSummaryDto> joblist = new ArrayList<JobSummaryDto>();
 
         for (Job job: jobs) {
-           result.add(JobMapper.INSTANCE.jobToJobSummaryDto(job));
+            joblist.add(JobMapper.INSTANCE.jobToJobSummaryDto(job));
         }
-        return jobs;
+        JobListingDto result = new JobListingDto();
+        result.setIndex(0);
+        result.setPageSize(20);
+        result.setTotalRecord(joblist.size());
+        result.setData(joblist);
+
+        return joblist;
     }
 }

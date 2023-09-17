@@ -1,6 +1,8 @@
 package com.mtech.sjmsjob.service;
 
 import com.mtech.sjmsjob.entity.Job;
+import com.mtech.sjmsjob.model.JobListingDto;
+import com.mtech.sjmsjob.model.JobSummaryDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,8 @@ public class JobServiceImplTest {
     @Test
     void givenEmptySearchCriteria_ReturnJobList() {
         jobService = Mockito.mock(JobServiceImpl.class);
-        Iterable<Job> jobList = jobService.listJobs();
+        Iterable<JobSummaryDto> result = jobService.listJobs();
 
-        Assertions.assertNotNull(jobList);
+        Assertions.assertNotNull(result);
     }
 }

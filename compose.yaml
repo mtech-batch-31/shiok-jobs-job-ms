@@ -2,13 +2,12 @@ services:
   db:
     image: 'postgres:15.4-alpine'
     environment:
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=_p@ssw0rd'
+      - 'POSTGRES_PASSWORD=_p@ssw0rd'
     ports:
       - '5432:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./initdata:/docker-entrypoint-initdb.d
     networks:
       - springboot-db-network
 
@@ -21,7 +20,7 @@ services:
     ports:
       - '8888:8080'
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/job
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sjdb
     restart: on-failure
     networks:
       - springboot-db-network
