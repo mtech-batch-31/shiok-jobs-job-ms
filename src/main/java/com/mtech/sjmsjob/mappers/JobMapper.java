@@ -9,5 +9,22 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface JobMapper {
     JobMapper INSTANCE = Mappers.getMapper(JobMapper.class);
-    JobSummaryDto jobToJobSummaryDto(Job job);
+
+    default JobSummaryDto jobToJobSummaryDto(Job job){
+        return JobSummaryDto
+                .builder()
+                .id(job.getId())
+                .company(job.getCompanyName())
+                .logo("https://bucketurl/"+job.getCompanyName())
+                .jobTitle(job.getJobTitle())
+                .salaryRange(job.getMinSalary()+" - "+job.getMaxSalary())
+                .level(job.getLevel())
+                .postedAt(job.getPostedDate().toString())
+                .employmentType(job.getEmploymentType())
+                .location(job.getLocation())
+                .skills(job.getSkills().split("\\|"))
+                .closingDate(job.getClosingDate())
+                .build();
+
+    }
 }
