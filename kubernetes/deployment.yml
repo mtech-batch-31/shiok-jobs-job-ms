@@ -28,8 +28,46 @@ spec:
   ports:
     - port: 8888
       targetPort: 8080
-      nodePort: 30000
+      nodePort: 30001
       protocol: TCP
       name: http
   type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-postgres
+  template:
+    metadata:
+      labels:
+        app: my-postgres
+    spec:
+      containers:
+        - name: my-postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: my-postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-postgres
+spec:
+  selector:
+    app: my-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
 ---
