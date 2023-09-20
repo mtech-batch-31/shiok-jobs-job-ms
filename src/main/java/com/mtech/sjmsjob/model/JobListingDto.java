@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +12,7 @@ public class JobListingDto {
 
     private Integer pageSize;
 
-    private Integer totalRecord;
+    private Long totalRecord;
 
     private String sortBy;
 

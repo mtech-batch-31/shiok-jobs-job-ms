@@ -5,6 +5,10 @@ import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.repository.JobRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,19 +21,25 @@ public class JobServiceImpl implements JobService {
         this.jobRepository = jobRepository;
     }
 
-    public Iterable<JobSummaryDto> listJobs() {
-        var jobs = this.jobRepository.findAll();
-        ArrayList<JobSummaryDto> joblist = new ArrayList<JobSummaryDto>();
+    public JobListingDto listJobs(int index, int pageSize, String[] sort) {
+
+        ArrayList<Sort.Order> sortOrder = new ArrayList<>();
+        for (String sortBy : sort) {
+            sortOrder.add(new Sort.Order(Sort.Direction.ASC,sortBy));
+        }
+        Pageable paging = PageRequest.of(index,pageSize, Sort.by(sortOrder) );
+        Page<Job> jobs = this.jobRepository.findAll(paging);
+        ArrayList<JobSummaryDto> joblist = new ArrayList<>();
 
         for (Job job: jobs) {
             joblist.add(JobMapper.INSTANCE.jobToJobSummaryDto(job));
         }
         JobListingDto result = new JobListingDto();
-        result.setIndex(0);
-        result.setPageSize(20);
-        result.setTotalRecord(joblist.size());
+        result.setIndex(index);
+        result.setPageSize(pageSize);
+        result.setTotalRecord(jobs.getTotalElements());
         result.setData(joblist);
 
-        return joblist;
+        return result;
     }
 }
