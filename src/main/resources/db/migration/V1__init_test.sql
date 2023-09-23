@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS job
     last_updated_by character varying(255),
     last_updated_time timestamp(6) without time zone,
     level character varying(255) ,
-    location character varying(255) ",
+    location character varying(255),
     max_salary numeric(38,2),
     min_salary numeric(38,2),
     posted_date timestamp(6) without time zone,
