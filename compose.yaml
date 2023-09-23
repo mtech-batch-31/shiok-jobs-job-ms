@@ -21,6 +21,7 @@ services:
       - '8888:8080'
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sjdb
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
     restart: on-failure
     networks:
       - springboot-db-network
