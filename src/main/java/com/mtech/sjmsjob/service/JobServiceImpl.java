@@ -12,10 +12,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class JobServiceImpl implements JobService {
     final private JobRepository jobRepository;
+
+    private final JobMapper jobMapper = JobMapper.INSTANCE;
 
     public JobServiceImpl(JobRepository jobRepository){
         this.jobRepository = jobRepository;
@@ -42,4 +45,13 @@ public class JobServiceImpl implements JobService {
 
         return result;
     }
+
+    public JobSummaryDto retrieveJob(long id) {
+        Optional<Job> job = this.jobRepository.findById(id);
+        if(job.isEmpty()) {
+            return null;
+        }
+        return jobMapper.jobToJobSummaryDto(job.get());
+    }
+
 }

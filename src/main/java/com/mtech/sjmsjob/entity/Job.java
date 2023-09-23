@@ -3,7 +3,10 @@ package com.mtech.sjmsjob.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -35,8 +38,8 @@ public class Job {
 
     private String workHours;
 
-    private Float minSalary;
-    private Float maxSalary;
+    private BigDecimal minSalary;
+    private BigDecimal maxSalary;
 
     private Date postedDate;
 
@@ -45,11 +48,15 @@ public class Job {
     @Version
     private Integer version;
 
-    private Date lastUpdatedTime;
-
     private String lastUpdatedBy;
 
-    private Date createdTime;
+    @UpdateTimestamp
+    private Date lastUpdatedTime;
 
     private String createdBy;
+
+    @CreationTimestamp
+    private Date createdTime;
+
+
 }
