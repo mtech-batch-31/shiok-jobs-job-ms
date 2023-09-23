@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS job
+CREATE TABLE IF NOT EXISTS sjmsjob.job
 (
     id bigint NOT NULL,
     closing_date timestamp(6) without time zone,
@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS job
     version integer,
     work_hours character varying(255),
     CONSTRAINT job_pkey PRIMARY KEY (id)
-)
+);
 
-INSERT INTO job(
+INSERT INTO sjmsjob.job (
 	id, closing_date, company_id, company_name, created_by, created_time, employment_type, job_category, job_summary,
 	job_title, last_updated_by, last_updated_time, location, max_salary, min_salary, posted_date, skills,
 	version, work_hours)
