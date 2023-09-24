@@ -7,9 +7,13 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.mtech.sjmsjob.entity.Job;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
 
-//    @Query(value = "Select j FROM #{#entityName} j WHERE j.jobTitle IN :jobTitles")
+    Optional<Job> findById(Long id);
+
+    //    @Query(value = "Select j FROM #{#entityName} j WHERE j.jobTitle IN :jobTitles")
 //    Page<Job> search(@Param("jobTitles") Collection<String> jobTitles, Pageable pageable);
 
     // JPA does not support dynamic sorting for native queries

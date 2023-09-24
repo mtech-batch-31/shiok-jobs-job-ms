@@ -2,7 +2,7 @@ package com.mtech.sjmsjob.mappers;
 
 
 import com.mtech.sjmsjob.entity.Job;
-import com.mtech.sjmsjob.model.JobListingDto;
+import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -47,4 +47,6 @@ public interface JobMapper {
                 .data(joblist)
                 .build();
     }
+
+    JobDto jobToJobDto(Job job);
 }

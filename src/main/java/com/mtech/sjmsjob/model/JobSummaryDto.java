@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +31,8 @@ public class JobSummaryDto {
     private String employmentType;
 
     private String location;
-    private String[] skills;
+
+    private List<String> skills;
 
     private Date closingDate;
 

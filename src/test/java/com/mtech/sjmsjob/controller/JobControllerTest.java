@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(JobController.class)
-public class JobControllerTest {
+class JobControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -22,4 +22,11 @@ public class JobControllerTest {
         mockMvc.perform(get("/api/v1/jobs"))
                 .andExpect(status().isOk());
    }
+
+    @Test
+    void givenJobId_returnSuccessfulResponse() throws Exception {
+        mockMvc.perform(get("/api/v1/jobs/1"))
+                .andExpect(status().isOk());
+    }
+
 }
