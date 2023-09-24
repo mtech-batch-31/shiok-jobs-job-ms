@@ -37,4 +37,18 @@ To check the minikube deployment,
 
 7. #kubectl get pods
 
+# HPA (Horizontal Pods Autoscaler)
 
+8. #kubectl delete pods load-generator
+
+9. #kubectl run -i --tty load-generator --image=busybox /bin/sh
+
+10. Hit enter for command prompt
+
+11. #while true; do wget -q -O- http://localhost:8888/api/v1/jobs; done
+
+12. #exit;
+   
+To restart load-generator,
+   
+16. #kubectl attach load-generator -c load-generator -i -t
