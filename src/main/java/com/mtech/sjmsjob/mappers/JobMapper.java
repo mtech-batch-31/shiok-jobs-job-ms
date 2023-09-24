@@ -3,6 +3,7 @@ package com.mtech.sjmsjob.mappers;
 
 import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.model.JobDto;
+import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -26,7 +27,8 @@ public interface JobMapper {
                 .postedAt(job.getPostedDate().toString())
                 .employmentType(job.getEmploymentType())
                 .location(job.getLocation())
-                .skills(job.getSkills().split("\\|"))
+                //.skills(job.getSkills().split("\\|"))
+                .skills(job.getSkills())
                 .closingDate(job.getClosingDate())
                 .build();
 
