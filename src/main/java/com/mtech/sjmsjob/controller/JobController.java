@@ -1,7 +1,7 @@
 package com.mtech.sjmsjob.controller;
 
+import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
-import com.mtech.sjmsjob.model.JobSummaryDto;
 import com.mtech.sjmsjob.service.JobService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +27,8 @@ public class JobController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobSummaryDto> retrieveJob(@PathVariable long id) {
-        JobSummaryDto jobSummaryDto = jobService.retrieveJob(id);
+    public ResponseEntity<JobDto> retrieveJob(@PathVariable long id) {
+        JobDto jobSummaryDto = jobService.retrieveJob(id);
         return ResponseEntity.ok(jobSummaryDto);
     }
 }

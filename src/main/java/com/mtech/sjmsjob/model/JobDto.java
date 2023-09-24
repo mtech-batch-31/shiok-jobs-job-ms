@@ -1,22 +1,18 @@
-package com.mtech.sjmsjob.entity;
+package com.mtech.sjmsjob.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@Entity
-public class Job {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class JobDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private long companyId;
 
@@ -24,15 +20,12 @@ public class Job {
 
     private String jobTitle;
 
-    @Column(columnDefinition = "TEXT")
     private String jobSummary;
 
     private String jobCategory;
 
     private String level;
 
-    @ElementCollection // 1
-    @CollectionTable(name = "job_skills", joinColumns = @JoinColumn(name = "id"))
     private List<String> skills;
 
     private String employmentType;
@@ -48,18 +41,13 @@ public class Job {
 
     private Date closingDate;
 
-    @Version
     private Integer version;
 
     private String lastUpdatedBy;
-
-    @UpdateTimestamp
     private Date lastUpdatedTime;
 
     private String createdBy;
 
-    @CreationTimestamp
     private Date createdTime;
-
 
 }

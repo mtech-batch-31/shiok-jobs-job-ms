@@ -1,6 +1,7 @@
 package com.mtech.sjmsjob.service;
 
 import com.mtech.sjmsjob.mappers.JobMapper;
+import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import com.mtech.sjmsjob.entity.Job;
@@ -46,12 +47,12 @@ public class JobServiceImpl implements JobService {
         return result;
     }
 
-    public JobSummaryDto retrieveJob(long id) {
+    public JobDto retrieveJob(long id) {
         Optional<Job> job = this.jobRepository.findById(id);
         if(job.isEmpty()) {
             return null;
         }
-        return jobMapper.jobToJobSummaryDto(job.get());
+        return jobMapper.jobToJobDto(job.get());
     }
 
 }
