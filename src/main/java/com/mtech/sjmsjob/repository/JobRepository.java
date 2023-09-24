@@ -21,6 +21,10 @@ public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
             "to_tsquery('english', :searchTerms) query, " +
             "ts_rank(to_tsvector(j.job_title || ' ' || j.job_summary), query) as search_rank " +
             "WHERE search_rank > 0 " +
-            "ORDER BY search_rank DESC", nativeQuery = true)
+            "ORDER BY search_rank DESC",
+            countQuery = "SELECT count(*) FROM job j, to_tsvector(j.job_title || ' ' || j.job_summary) as searched, " +
+                    "to_tsquery('english', :searchTerms) query " +
+                    "WHERE searched @@ query ",
+            nativeQuery = true)
     Page<Job> search(@Param("searchTerms") String searchTerm,Pageable pageable );
 }
