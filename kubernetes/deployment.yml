@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: shiok-jobs-job-ms
-          image: andrewtan2000/shiok-jobs-job-ms:latest
+          image: andrewtan2000/shiok-jobs-jobs-ms:latest
           ports:
             - containerPort: 8080
 ---
@@ -33,41 +33,16 @@ spec:
       name: http
   type: LoadBalancer
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
 metadata:
-  name: my-postgres
+  name: shiok-jobs-job-ms
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: my-postgres
-  template:
-    metadata:
-      labels:
-        app: my-postgres
-    spec:
-      containers:
-        - name: my-postgres
-          image: postgres:latest
-          ports:
-            - containerPort: 5432
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: postgres-data
-          persistentVolumeClaim:
-            claimName: my-postgres-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-postgres
-spec:
-  selector:
-    app: my-postgres
-  ports:
-    - port: 5432
-      targetPort: 5432
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: shiok-jobs-job-ms
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
 ---
