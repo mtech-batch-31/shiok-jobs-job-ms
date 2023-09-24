@@ -31,7 +31,7 @@ public class Job {
 
     private String level;
 
-    @ElementCollection // 1
+    @ElementCollection
     @CollectionTable(name = "job_skills", joinColumns = @JoinColumn(name = "id"))
     private List<String> skills;
 
