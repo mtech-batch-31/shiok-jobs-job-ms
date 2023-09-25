@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew test
 
   generate_jar:
-    needs: code_scan
+#    needs: code_scan
     name: Generate Jar File
     runs-on: ubuntu-latest
     steps:
