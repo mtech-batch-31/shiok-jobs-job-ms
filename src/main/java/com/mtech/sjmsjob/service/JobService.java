@@ -10,5 +10,5 @@ public interface JobService {
 
     JobListingDto searchJobs(int index, int pageSize, String[] sort, String keyWords);
 
-    JobListingDto searchJobs(int index, int pageSize, String[] sort, String[] jobTitles);
+    //searchJobListingDto searchJobs(int index, int pageSize, String[] sort, String[] jobTitles);
 }

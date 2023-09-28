@@ -14,7 +14,7 @@ public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
     Optional<Job> findById(Long id);
 
     //    @Query(value = "Select j FROM #{#entityName} j WHERE j.jobTitle IN :jobTitles")
-//    Page<Job> search(@Param("jobTitles") Collection<String> jobTitles, Pageable pageable);
+    //    Page<Job> search(@Param("jobTitles") Collection<String> jobTitles, Pageable pageable);
 
     // JPA does not support dynamic sorting for native queries
     @Query(value = "SELECT * FROM job j, to_tsvector(j.job_title || ' ' || j.job_summary) as searched, " +

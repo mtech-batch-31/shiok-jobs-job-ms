@@ -16,16 +16,6 @@ public class JobController
         this.jobService = jobService;
     }
 
-    @GetMapping
-    public ResponseEntity<JobListingDto> listJobs(@RequestParam(defaultValue = "0") int index,
-                                                  @RequestParam(defaultValue = "10") int pagesize,
-                                                  @RequestParam(defaultValue = "id") String[] sort)
-    {
-        JobListingDto jobList = this.jobService.listJobs(index,pagesize, sort);
-
-        return ResponseEntity.ok(jobList);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<JobDto> retrieveJob(@PathVariable long id) {
         JobDto jobSummaryDto = jobService.retrieveJob(id);
@@ -33,14 +23,14 @@ public class JobController
     }
 
     //search criteria
-    //job title, salary range, company, employee type, currency, location,
-    // skill (multiple skills)
     //?keywords=Software Engineer
-    @GetMapping("/search")
+    //fulltext search for job title, company, job summary, skill
+    //defined search for salary range, employee type, location
+    @GetMapping()
 
     public ResponseEntity<JobListingDto> Search(@RequestParam(defaultValue = "0") int index,
                                                 @RequestParam(defaultValue = "10") int pageSize,
-                                                @RequestParam(defaultValue = "id") String[] sort,
+                                                @RequestParam(defaultValue = "posted_date,desc") String[] sort,
                                                 @RequestParam(defaultValue = "") String keywords){
         var result = this.jobService.searchJobs(index, pageSize, sort, keywords);
         return ResponseEntity.ok(result);
