@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: shiok-jobs-job-ms
-          image: andrewtan2000/shiok-jobs-jobs-ms:latest
+          image: 845698241774.dkr.ecr.ap-southeast-1.amazonaws.com/sj-jobs-ms:latest
           ports:
             - containerPort: 8080
 ---
