@@ -19,13 +19,13 @@ class JobControllerTest {
     private JobServiceImpl jobService;
     @Test
     void givenEmptySearchCriteria_returnSuccessfulResponse() throws Exception {
-        mockMvc.perform(get("/api/v1/jobs"))
+        mockMvc.perform(get("/v1/jobs"))
                 .andExpect(status().isOk());
    }
 
     @Test
     void givenJobId_returnSuccessfulResponse() throws Exception {
-        mockMvc.perform(get("/api/v1/jobs/1"))
+        mockMvc.perform(get("/v1/jobs/1"))
                 .andExpect(status().isOk());
     }
 
