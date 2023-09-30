@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -43,26 +44,51 @@ public class JobServiceImpl implements JobService {
 //        return result;
 //    }
 
-    public JobListingDto searchJobs(int index, int pageSize, String[] sort, String keyWords){
+//    public JobListingDto searchJobs(int index, int pageSize, String[] sort, String keyWords, String[] employmentType) {
+//        Page<Job> jobs;
+//        JobListingDto result = null;
+//        if (keyWords.length() > 0) {
+//            //form search terms (simple version)
+//            keyWords = keyWords.trim().replaceAll("\\s+", "|");
+//            jobs = this.jobRepository.searchOld(keyWords, getPagingRequest(index, pageSize, sort));
+//        }
+//        else {
+//            jobs = this.jobRepository.findAll(getPagingRequest(index, pageSize, sort));
+//        }
+//        if (jobs != null)
+//            result = JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
+//
+//        return result;
+//    }
+
+    public JobListingDto searchJob(int index, int pageSize, String[] sort, String keyWords, String[] employmentType
+            , String[] workLocations, BigDecimal minimumSalary, String[] skills) {
         Page<Job> jobs;
         JobListingDto result = null;
-        if(keyWords.length() > 0){
-            //form search terms (simple version)
-            keyWords = keyWords.trim().replaceAll("\\s+", "|")           ;
-            jobs = this.jobRepository.search(keyWords, getPagingRequest(index,pageSize, sort ));
-        }
-        else {
-            jobs = this.jobRepository.findAll(getPagingRequest(index,pageSize, sort ));
-        }
-        if(jobs != null)
+        String employmentTypesConcat = String.join("|",employmentType);
+        String workLocationsConcat = String.join("|",workLocations);
+        String skillsConcat = String.join("|",skills);
+
+        //replace spaces with | delimiter for fulltext search
+        keyWords = keyWords.trim().replaceAll("\\s+", "|");
+        jobs = this.jobRepository.search(keyWords, employmentTypesConcat, workLocationsConcat, minimumSalary, skillsConcat, getPagingRequest(index, pageSize, sort));
+
+        if (jobs != null)
             result = JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
+
         return result;
     }
-
     private Pageable getPagingRequest(int index, int pageSize, String[] sort){
         ArrayList<Sort.Order> sortOrder = new ArrayList<>();
         for (String sortBy : sort) {
-            sortOrder.add(new Sort.Order(Sort.Direction.ASC,sortBy));
+            var sortParams = sortBy.split("\\|");
+            var sortDirection = Sort.Direction.ASC;
+            if(sortParams.length >= 2){
+                if(sortParams[1].equalsIgnoreCase(Sort.Direction.DESC.toString()))
+                    sortDirection = Sort.Direction.DESC;
+            }
+            if(sortParams.length >=1) sortBy = sortParams[0];
+            sortOrder.add(new Sort.Order(sortDirection,sortBy));
         }
         return PageRequest.of(index,pageSize, Sort.by(sortOrder) );
     }

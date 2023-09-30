@@ -6,6 +6,9 @@ import com.mtech.sjmsjob.service.JobService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping("/api/v1/jobs")
 public class JobController
@@ -30,9 +33,18 @@ public class JobController
 
     public ResponseEntity<JobListingDto> Search(@RequestParam(defaultValue = "0") int index,
                                                 @RequestParam(defaultValue = "10") int pageSize,
-                                                @RequestParam(defaultValue = "posted_date,desc") String[] sort,
-                                                @RequestParam(defaultValue = "") String keywords){
-        var result = this.jobService.searchJobs(index, pageSize, sort, keywords);
+                                                @RequestParam(defaultValue = "posted_date|desc") String[] sort,
+                                                @RequestParam(defaultValue = "") String keywords,
+                                                @RequestParam(defaultValue = "") String[] employmentType,
+                                                @RequestParam(defaultValue = "") String[] workLocations,
+                                                @RequestParam(defaultValue = "") String minimumSalary,
+                                                @RequestParam(defaultValue = "") String[] skills){
+
+        var pattern = Pattern.compile("^[\\d]*[\\.]?[\\d]*$");
+        BigDecimal minSalary = new BigDecimal(0.00);
+        if(!minimumSalary.isEmpty() && pattern.matcher(minimumSalary).matches())
+            minSalary = new BigDecimal(minimumSalary);
+        var result = this.jobService.searchJob(index, pageSize, sort, keywords, employmentType, workLocations, minSalary, skills);
         return ResponseEntity.ok(result);
     }
 }

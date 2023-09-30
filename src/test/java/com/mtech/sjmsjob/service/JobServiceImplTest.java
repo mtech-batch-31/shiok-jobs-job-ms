@@ -16,10 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -88,9 +85,9 @@ class JobServiceImplTest {
         var jobs = testJobListing;
 
         //when
-        var pageable = getPagingRequest(0,10, new String[]{"posted_date,desc"});
+        var pageable = getPagingRequest(0,10, new String[]{"posted_date|desc"});
         Mockito.when(jobRepository.findAll(pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
-        JobListingDto result = jobServiceImpl.listJobs(0, 10, new String[]{"posted_date,desc"} );
+        JobListingDto result = jobServiceImpl.listJobs(0, 10, new String[]{"posted_date|desc"} );
 
         //then
         Assertions.assertNotNull(result);
@@ -103,20 +100,46 @@ class JobServiceImplTest {
         Assertions.assertTrue(record2.getPostedAt().compareTo(record3.getPostedAt()) >= 0);
     }
 
+//    @Test
+//    void givenSearchByKeyword_ReturnJobList(){
+//        //given
+//        var jobs = testJobListing;
+//        var keyWords = "engineer|consultant";
+//        var employmentTypes = new String[]{};
+//        //when
+//        var pageable = getPagingRequest(0,10, new String[]{"posted_date|desc"});
+//        Mockito.when(jobRepository.searchOld(keyWords, pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
+//        //Mockito.when(jobRepository.findAll(pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
+//        JobListingDto result = jobServiceImpl.searchJobs(0, 10, new String[]{"posted_date|desc"} , keyWords, employmentTypes);
+//
+//        Assertions.assertNotNull(result);
+//        Assertions.assertEquals(3, result.getTotalRecord());
+//
+//    }
+
     @Test
     void givenSearchByKeyword_ReturnJobList(){
         //given
         var jobs = testJobListing;
         var keyWords = "engineer|consultant";
+        var employmentTypes = new String[]{};
+        var workLocations = new String[]{};
+        var minimumSalary = new BigDecimal(0.00);
+        var skills = new String[]{};
+
         //when
-        var pageable = getPagingRequest(0,10, new String[]{"posted_date,desc"});
-        Mockito.when(jobRepository.search(keyWords, pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
-        //Mockito.when(jobRepository.findAll(pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
-        JobListingDto result = jobServiceImpl.searchJobs(0, 10, new String[]{"posted_date,desc"} , keyWords);
+        var pageable = getPagingRequest(0,10, new String[]{"posted_date|desc"});
+        Mockito.when(jobRepository.search(keyWords,
+                                            String.join("|", employmentTypes),
+                                            String.join("|", workLocations),
+                                            minimumSalary,
+                                            String.join("|",skills), pageable))
+                                    .thenReturn(new PageImpl<>(jobs, pageable, 3));
+        JobListingDto result = jobServiceImpl.searchJob(0, 10, new String[]{"posted_date|desc"} , keyWords, employmentTypes
+                                                    , workLocations, minimumSalary, skills);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(3, result.getTotalRecord());
-
     }
 
     @Test
@@ -124,15 +147,23 @@ class JobServiceImplTest {
         //given
         var jobs = testJobListing;
         var keyWords = "";
+        var employmentTypes = new String[]{};
+        var workLocations = new String[]{};
+        var minimumSalary = new BigDecimal(0.00);
+        var skills = new String[]{};
         //when
-        var pageable = getPagingRequest(0,10, new String[]{"posted_date,desc"});
-        //Mockito.when(jobRepository.search(keyWords, pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
-        Mockito.when(jobRepository.findAll(pageable)).thenReturn(new PageImpl<>(jobs, pageable, 3));
-        JobListingDto result = jobServiceImpl.searchJobs(0, 10, new String[]{"posted_date,desc"} , keyWords);
+        var pageable = getPagingRequest(0,10, new String[]{"posted_date|desc"});
+        Mockito.when(jobRepository.search(keyWords,
+                        String.join("|", employmentTypes),
+                        String.join("|", workLocations),
+                        minimumSalary,
+                        String.join("|",skills), pageable))
+                .thenReturn(new PageImpl<>(jobs, pageable, 3));
+        JobListingDto result = jobServiceImpl.searchJob(0, 10, new String[]{"posted_date|desc"} , keyWords, employmentTypes
+                , workLocations, minimumSalary, skills);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(3, result.getTotalRecord());
-
     }
     @Test
     void givenId_ReturnJob() {
@@ -149,7 +180,14 @@ class JobServiceImplTest {
     private Pageable getPagingRequest(int index, int pageSize, String[] sort){
         ArrayList<Sort.Order> sortOrder = new ArrayList<>();
         for (String sortBy : sort) {
-            sortOrder.add(new Sort.Order(Sort.Direction.ASC,sortBy));
+            var sortParams = sortBy.split("\\|");
+            var sortDirection = Sort.Direction.ASC;
+            if(sortParams.length >= 2){
+                if(sortParams[1].equalsIgnoreCase(Sort.Direction.DESC.toString()))
+                    sortDirection = Sort.Direction.DESC;
+            }
+            if(sortParams.length >=1) sortBy = sortParams[0];
+            sortOrder.add(new Sort.Order(sortDirection,sortBy));
         }
         return PageRequest.of(index,pageSize, Sort.by(sortOrder) );
     }
