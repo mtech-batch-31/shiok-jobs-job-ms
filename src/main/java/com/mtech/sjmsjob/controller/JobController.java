@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/api/v1/jobs")
+@RequestMapping("/v1/jobs")
 public class JobController
 {
     private final JobService jobService;
