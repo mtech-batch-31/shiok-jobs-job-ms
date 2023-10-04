@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // Allow requests from any origin to the following endpoints
-        registry.addMapping("/api/**")
+        registry.addMapping("/v1/jobs/**")
                 .allowedOrigins("*") // You can specify specific origins instead of "*"
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(false) // You can set this to true if you need credentials (cookies, etc.) to be included in the request.
