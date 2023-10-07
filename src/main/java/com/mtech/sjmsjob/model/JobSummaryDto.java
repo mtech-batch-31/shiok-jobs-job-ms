@@ -1,5 +1,6 @@
 package com.mtech.sjmsjob.model;
 
+import com.mtech.sjmsjob.util.AppProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,4 +37,7 @@ public class JobSummaryDto {
 
     private Date closingDate;
 
+    public String getLogo(){
+        return AppProperties.getCompanyLogoUrl().concat(this.company.toLowerCase().concat(".svg"));
+    }
 }

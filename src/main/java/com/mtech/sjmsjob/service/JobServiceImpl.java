@@ -30,37 +30,6 @@ public class JobServiceImpl implements JobService {
         return JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
     }
 
-//    public JobListingDto searchJobs(int index, int pageSize, String[] sort, String[] jobTitles){
-//        Page<Job> jobs;
-//        JobListingDto result;
-//        if(jobTitles.length > 0){
-//            jobs = this.jobRepository.search(jobTitles, getPagingRequest(index,pageSize, sort ));
-//            return null;
-//       }
-//       else {
-//            jobs = this.jobRepository.findAll(getPagingRequest(index,pageSize, sort ));
-//       }
-//        result = JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
-//        return result;
-//    }
-
-//    public JobListingDto searchJobs(int index, int pageSize, String[] sort, String keyWords, String[] employmentType) {
-//        Page<Job> jobs;
-//        JobListingDto result = null;
-//        if (keyWords.length() > 0) {
-//            //form search terms (simple version)
-//            keyWords = keyWords.trim().replaceAll("\\s+", "|");
-//            jobs = this.jobRepository.searchOld(keyWords, getPagingRequest(index, pageSize, sort));
-//        }
-//        else {
-//            jobs = this.jobRepository.findAll(getPagingRequest(index, pageSize, sort));
-//        }
-//        if (jobs != null)
-//            result = JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
-//
-//        return result;
-//    }
-
     public JobListingDto searchJob(int index, int pageSize, String[] sort, String keyWords, String[] employmentType
             , String[] workLocations, BigDecimal minimumSalary, String[] skills) {
         Page<Job> jobs;
