@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/v1/jobs")
 public class JobController
@@ -46,5 +49,12 @@ public class JobController
             minSalary = new BigDecimal(minimumSalary);
         var result = this.jobService.searchJob(index, pageSize, sort, keywords, employmentType, workLocations, minSalary, skills);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, String>> Testing() {
+        Map<String, String> greeting = new HashMap<>();
+        greeting.put("greeting", "Hello World");
+        return ResponseEntity.ok(greeting);
     }
 }

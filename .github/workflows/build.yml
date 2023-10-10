@@ -108,6 +108,8 @@ jobs:
     name: Deploy to EKS
     needs: build_and_push_image
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ secrets.ECR_REPOSITORY_URL }}:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -130,11 +132,11 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name sj-jobs-ms
+        run: aws eks update-kubeconfig --name sj-eks
 
       - name: Deploy to EKS
         run: |
-          kubectl apply -f kubernetes/deployment.yaml          
+          envsubst < kubernetes/deployment.yaml | kubectl apply -f -          
 
 # will continue zap scan later
 #  code_scan:
