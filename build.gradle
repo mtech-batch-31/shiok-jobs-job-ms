@@ -47,6 +47,7 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
 //
 //checkstyle {
@@ -75,4 +76,26 @@ sonarqube {
 bootJar {
 	archiveFileName = "shiok_jobs_job_ms.jar"
 	archiveClassifier.set(null)
+}
+
+jacocoTestReport {
+	dependsOn test
+
+	reports {
+		xml.required = true
+	}
+
+	afterEvaluate {
+		excludedClassFilesForReport(classDirectories)
+	}
+}
+
+private excludedClassFilesForReport(classDirectories) {
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, exclude: [
+				'**/entity/*.class',
+				'**/model/**/*.class',
+				'**/Application.class'
+		])
+	}))
 }

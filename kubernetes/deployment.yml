@@ -1,84 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sj-ns
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shiok-jobs-job-ms
+  namespace: sj-ns
+  name: sj-jobs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shiok-jobs-job-ms
+      app.kubernetes.io/name: sj-jobs
   template:
     metadata:
       labels:
-        app: shiok-jobs-job-ms
+        app.kubernetes.io/name: sj-jobs
     spec:
       containers:
-        - name: shiok-jobs-job-ms
-          image: 845698241774.dkr.ecr.ap-southeast-1.amazonaws.com/sj-jobs-ms:latest
+        - name: sj-jobs
+          image: ${IMAGE_NAME}
+          env:
+            - name: spring.datasource.url
+              value: ${DATASOURCE_URL}
+
+            - name: spring.datasource.username
+              value: ${DATASOURCE_USER_ID}
+
+            - name: spring.datasource.password
+              value: ${DATASOURCE_SECRET}
+
+            - name: spring.flyway.url
+              value: ${DATASOURCE_URL}
+
+            - name: spring.flyway.schemas
+              value: ${DATASOURCE_USER_ID}
+
+            - name: spring.flyway.user
+              value: ${DATASOURCE_USER_ID}
+
+            - name: spring.flyway.password
+              value: ${DATASOURCE_SECRET}
+
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: shiok-jobs-job-ms-service
-spec:
-  selector:
-    app: shiok-jobs-job-ms
-  ports:
-    - port: 8080
-      targetPort: 8080
-      nodePort: 30001
-      protocol: TCP
-      name: http
-  type: LoadBalancer
----
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: shiok-jobs-job-ms
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: shiok-jobs-job-ms
-  minReplicas: 1
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 50
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: sj-ms-ingress
-  namespace: sj-ms-ingress
-  labels:
-    app: color-app
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
-    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
-    alb.ingress.kubernetes.io/success-codes: '200'
-    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
-    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /yellow
-            pathType: Prefix
-            backend:
-              service:
-                name: yellow-service
-                port:
-                  number: 80
-          - path: /green
-            pathType: Prefix
-            backend:
-              service:
-                name: green-service
-                port:
-                  number: 80
+
+
