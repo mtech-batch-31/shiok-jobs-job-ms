@@ -35,7 +35,7 @@ spec:
               value: ${DATASOURCE_URL}
 
             - name: spring.flyway.schemas
-              value: ${DATASOURCE_SCHEMAS}
+              value: ${DATASOURCE_USER_ID}
 
             - name: spring.flyway.user
               value: ${DATASOURCE_USER_ID}

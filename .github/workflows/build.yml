@@ -113,7 +113,6 @@ jobs:
       DATASOURCE_URL: ${{ secrets.DATASOURCE_URL }}
       DATASOURCE_USER_ID: ${{ secrets.DATASOURCE_USER_ID }}
       DATASOURCE_SECRET: ${{ secrets.DATASOURCE_SECRET }}
-      DATASOURCE_SCHEMAS: ${{ secrets.DATASOURCE_SCHEMAS }}
 
     steps:
       - name: Checkout code
