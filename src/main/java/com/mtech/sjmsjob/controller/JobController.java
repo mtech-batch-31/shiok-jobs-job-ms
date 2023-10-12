@@ -44,7 +44,7 @@ public class JobController
                                                 @RequestParam(defaultValue = "") String[] skills){
 
         var pattern = Pattern.compile("^[\\d]*[\\.]?[\\d]*$");
-        BigDecimal minSalary = new BigDecimal(0.00);
+        BigDecimal minSalary = BigDecimal.ZERO;
         if(!minimumSalary.isEmpty() && pattern.matcher(minimumSalary).matches())
             minSalary = new BigDecimal(minimumSalary);
         var result = this.jobService.searchJob(index, pageSize, sort, keywords, employmentType, workLocations, minSalary, skills);
