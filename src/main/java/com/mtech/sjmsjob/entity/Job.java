@@ -65,5 +65,6 @@ public class Job {
     @CreationTimestamp
     private Date createdTime;
 
-
+    @OneToMany(mappedBy = "job")
+    private List<JobApplication> applications;
 }

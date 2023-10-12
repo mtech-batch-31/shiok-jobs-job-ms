@@ -47,20 +47,20 @@ class JobServiceImplTest {
                     , "junior", new ArrayList<>(){{add("microsoft word");}}, "part-time"
                     , "hybrid", "9am - 6pm"
                     , new BigDecimal(10000.00), new BigDecimal(15000.00)
-                    , postedDate1, closingDate,1, "test", new Date(), "test", new Date() ));
+                    , postedDate1, closingDate,1, "test", new Date(), "test", new Date(), null ));
 
             add(new Job(2,1,"companyB","Technical manager", "manage project"
                     , "information technology", "manager"
                     , new ArrayList<>(){{add("project management"); add("prince");}}, "full-time"
                     , "hybrid", "9am - 6pm"
                     , new BigDecimal(20000.00), new BigDecimal(25000.00)
-                    , postedDate2, closingDate,1, "test", new Date(), "test", new Date() ));
+                    , postedDate2, closingDate,1, "test", new Date(), "test", new Date(), null ));
 
             add(new Job(3,1,"companyC","Lead Consultant", "lead engineer"
                     , "information technology", "senior"
                     , new ArrayList<>(){{add("java");}}, "part-time", "hybrid"
                     , "9am - 6pm", new BigDecimal(20000.00), new BigDecimal(25000.00)
-                    , postedDate3, closingDate,1, "test", new Date(), "test", new Date() ));
+                    , postedDate3, closingDate,1, "test", new Date(), "test", new Date(), null ));
         }};
     }
 
