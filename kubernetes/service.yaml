@@ -3,15 +3,11 @@ kind: Service
 metadata:
   namespace: sj-ns
   name: sj-jobs-service
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
 spec:
   selector:
     app.kubernetes.io/name: sj-jobs
   ports:
-    - port: 8080
+    - port: 80
       targetPort: 8080
       protocol: TCP
   type: LoadBalancer

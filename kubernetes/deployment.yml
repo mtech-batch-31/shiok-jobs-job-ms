@@ -20,7 +20,29 @@ spec:
     spec:
       containers:
         - name: sj-jobs
-          image: 845698241774.dkr.ecr.ap-southeast-1.amazonaws.com/sj-jobs-ms:latest
+          image: ${IMAGE_NAME}
+          env:
+            - name: spring.datasource.url
+              value: ${DATASOURCE_URL}
+
+            - name: spring.datasource.username
+              value: ${DATASOURCE_USER_ID}
+
+            - name: spring.datasource.password
+              value: ${DATASOURCE_SECRET}
+
+            - name: spring.flyway.url
+              value: ${DATASOURCE_URL}
+
+            - name: spring.flyway.schemas
+              value: ${DATASOURCE_SCHEMAS}
+
+            - name: spring.flyway.user
+              value: ${DATASOURCE_USER_ID}
+
+            - name: spring.flyway.password
+              value: ${DATASOURCE_SECRET}
+
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
