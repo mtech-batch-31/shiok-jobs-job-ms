@@ -141,7 +141,7 @@ jobs:
       - name: Deploy to EKS
         run: |
           envsubst < kubernetes/deployment.yml | kubectl apply -f -          
-          kubectl rollout restart deployment/sj-bff -n sj-ns
+          kubectl rollout restart deployment/sj-jobs -n sj-ns
           kubectl apply -f kubernetes/service.yaml
           kubectl apply -f kubernetes/scaling.yaml
 
