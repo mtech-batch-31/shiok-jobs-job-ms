@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/jobappl")
+@RequestMapping("/v1/jobs")
 public class JobApplicationController {
 
     private final JobApplicationService jobApplService;
