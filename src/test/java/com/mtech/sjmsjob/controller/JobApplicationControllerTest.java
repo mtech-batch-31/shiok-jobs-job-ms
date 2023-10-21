@@ -1,16 +1,13 @@
 package com.mtech.sjmsjob.controller;
 
+import com.mtech.sjmsjob.entity.JobApplication;
 import com.mtech.sjmsjob.service.JobApplicationService;
-import com.mtech.sjmsjob.util.JwtTokenUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,20 +19,38 @@ public class JobApplicationControllerTest {
     @MockBean
     private JobApplicationService jobApplicationService;
 
-    @MockBean
-    private JwtTokenUtil tokenUtil;
+    @Test
+    void givenApplyJobWhenInValidJobId_return404Response() throws Exception{
 
-    private  void initAuth(){
-        given(tokenUtil.getUserNameFromJWT(any(String.class))).willReturn("testuser");
+        mockMvc.perform(post("/v1/jobs/apply")
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(post("/v1/jobs/apply")
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
+                        .content("abc"))
+                .andExpect(status().isBadRequest());
+
+    }
+    @Test
+    void givenApplyJobWhenInValidUserId_return404Response() throws Exception{
+
+        mockMvc.perform(post("/v1/jobs/apply").content("1"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(post("/v1/jobs/apply").content("1")
+                        .header("user-id", "somethinginvalid")
+                        .content("abc"))
+                .andExpect(status().isBadRequest());
+
     }
 
-//    @Test
-//    void givenApplyJobWhenValidJobId() throws Exception{
-//
-//        mockMvc.perform(post("/v1/jobappl/apply")
-//                            .content("1")
-//                            .contentType(MediaType.TEXT_PLAIN)
-//                            .header("Authorization","Bearer 1234"))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void givenApplyJobWhenValidJobId_returnSuccessfulResponse() throws Exception{
+
+        mockMvc.perform(post("/v1/jobs/apply")
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
+                        .content("1"))
+                .andExpect(status().isOk());
+    }
 }
