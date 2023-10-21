@@ -26,10 +26,10 @@ public class JobApplicationServiceImpl implements JobApplicationService{
             throw new IllegalArgumentException("invalid job id");
         }
         else {
-            var applied = jobApplRepository.findByUserIdAndJobId(userId, job.get());
-            if(applied.isPresent())
+            var applied = jobApplRepository.findByUserIdAndJobId(userId, jobId);
+            if(applied.isPresent() && applied.get().size() > 0)
             {
-                return applied.get();
+                return applied.get().get(0);
             }
             var now = new Date();
             JobApplication jobAppl = new JobApplication();
