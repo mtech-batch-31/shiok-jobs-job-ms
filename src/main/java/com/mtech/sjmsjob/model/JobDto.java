@@ -50,4 +50,6 @@ public class JobDto {
 
     private Date createdTime;
 
+    private Boolean applied;
+
 }

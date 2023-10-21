@@ -6,12 +6,14 @@ import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 
-@Mapper
+
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface JobMapper {
     JobMapper INSTANCE = Mappers.getMapper(JobMapper.class);
 

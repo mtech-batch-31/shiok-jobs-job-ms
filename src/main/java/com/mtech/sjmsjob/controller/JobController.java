@@ -3,25 +3,47 @@ package com.mtech.sjmsjob.controller;
 import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.service.JobService;
+import com.mtech.sjmsjob.util.JwtTokenUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/jobs")
 public class JobController
 {
     private final JobService jobService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public JobController(JobService jobService){
+    public JobController(JobService jobService, JwtTokenUtil jwtTokenUtil){
         this.jobService = jobService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobDto> retrieveJob(@PathVariable long id) {
+    public ResponseEntity<JobDto> retrieveJobById(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+        log.info("retrieveJobById, headers={}, id={}",headers,id);
         JobDto jobSummaryDto = jobService.retrieveJob(id);
+        return ResponseEntity.ok(jobSummaryDto);
+    }
+
+    @GetMapping("/auth/{id}")
+    public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+        log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers,id);
+        String authToken = headers.getFirst("Authorization");
+        String userId = null;
+        try{
+            userId = jwtTokenUtil.getUserNameFromJWT(authToken.replace("Bearer ",""));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        JobDto jobSummaryDto = jobService.retrieveJob(id, userId);
+
         return ResponseEntity.ok(jobSummaryDto);
     }
 

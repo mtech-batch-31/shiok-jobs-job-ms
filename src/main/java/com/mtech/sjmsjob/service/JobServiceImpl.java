@@ -4,7 +4,10 @@ import com.mtech.sjmsjob.mappers.JobMapper;
 import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.entity.Job;
+import com.mtech.sjmsjob.repository.JobApplicationRepository;
 import com.mtech.sjmsjob.repository.JobRepository;
+import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,15 +17,20 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class JobServiceImpl implements JobService {
-    final private JobRepository jobRepository;
+    private final  JobRepository jobRepository;
+
+    private final JobApplicationRepository jobApplicationRepository;
 
     private final JobMapper jobMapper = JobMapper.INSTANCE;
 
-    public JobServiceImpl(JobRepository jobRepository){
+    public JobServiceImpl(JobRepository jobRepository, JobApplicationRepository jobApplicationRepository){
         this.jobRepository = jobRepository;
+        this.jobApplicationRepository = jobApplicationRepository;
     }
 
     public JobListingDto listJobs(int index, int pageSize, String[] sort) {
@@ -60,6 +68,19 @@ public class JobServiceImpl implements JobService {
             sortOrder.add(new Sort.Order(sortDirection,sortBy));
         }
         return PageRequest.of(index,pageSize, Sort.by(sortOrder) );
+    }
+
+    public JobDto retrieveJob(long jobId, String userId) {
+        log.debug("retrieveJob for jobId={}, userId={}, ", jobId, userId);
+        JobDto jobDto = retrieveJob(jobId);
+        jobDto.setApplied(false);
+        if (jobDto!= null && !StringUtils.isBlank(userId)){
+            var applicationListOptional = jobApplicationRepository.findByUserIdAndJobId(UUID.fromString(userId), jobId);
+            if(applicationListOptional.isPresent() && !applicationListOptional.get().isEmpty()) {
+                jobDto.setApplied(true);
+            }
+        }
+        return jobDto;
     }
 
     public JobDto retrieveJob(long id) {
