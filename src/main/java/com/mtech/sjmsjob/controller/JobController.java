@@ -35,21 +35,14 @@ public class JobController
 
     @GetMapping("/auth/{id}")
     public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @PathVariable long id) {
-        log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers,id);
-        String authToken = headers.getFirst("Authorization");
+        log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers, id);
+        String userId = headers.getFirst("user-id");
         JobDto jobDto = null;
-        if (StringUtils.isBlank(authToken)){
-            log.error("Authorization header not found");
+        if (StringUtils.isBlank(userId)){
+            log.error("user-id header not found");
             jobDto = jobService.retrieveJob(id);
         } else {
-            String userId = null;
-            try{
-                userId = jwtTokenUtil.getUserNameFromJWT(authToken.replace("Bearer ",""));
-                jobDto = jobService.retrieveJob(id, userId);
-            } catch (Exception e){
-                log.error(e.getMessage());
-//                e.printStackTrace();
-            }
+            jobDto = jobService.retrieveJob(id, userId);
         }
         return ResponseEntity.ok(jobDto);
     }
