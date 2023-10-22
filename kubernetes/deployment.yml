@@ -25,7 +25,7 @@ spec:
             requests:
               memory: 50Mi
             limits:
-              memory: 100Mi
+              memory: 150Mi
 
           env:
             - name: spring.datasource.url
