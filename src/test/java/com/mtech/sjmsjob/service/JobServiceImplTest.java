@@ -168,7 +168,7 @@ class JobServiceImplTest {
     @Test
     void givenId_ReturnJob() {
         // Given
-        Mockito.when(jobRepository.findById(1L)).thenReturn(null);
+        Mockito.when(jobRepository.findById(1L)).thenReturn(Optional.of(new Job()));
 
         // When
         JobDto jobDto = jobServiceImpl.retrieveJob(1L );
