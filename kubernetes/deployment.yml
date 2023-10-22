@@ -23,9 +23,9 @@ spec:
           image: ${IMAGE_NAME}
           resources:
             requests:
-              memory: 50Mi
+              memory: 100Mi
             limits:
-              memory: 150Mi
+              memory: 250Mi
 
           env:
             - name: spring.datasource.url
