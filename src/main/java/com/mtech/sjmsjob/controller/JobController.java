@@ -4,6 +4,7 @@ import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.service.JobService;
 import com.mtech.sjmsjob.util.JwtTokenUtil;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -28,23 +29,28 @@ public class JobController
     @GetMapping("/{id}")
     public ResponseEntity<JobDto> retrieveJobById(@RequestHeader HttpHeaders headers, @PathVariable long id) {
         log.info("retrieveJobById, headers={}, id={}",headers,id);
-        JobDto jobSummaryDto = jobService.retrieveJob(id);
-        return ResponseEntity.ok(jobSummaryDto);
+        JobDto jobDto = jobService.retrieveJob(id);
+        return ResponseEntity.ok(jobDto);
     }
 
     @GetMapping("/auth/{id}")
     public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @PathVariable long id) {
         log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers,id);
         String authToken = headers.getFirst("Authorization");
-        String userId = null;
-        try{
-            userId = jwtTokenUtil.getUserNameFromJWT(authToken.replace("Bearer ",""));
-        } catch (Exception e){
-            e.printStackTrace();
+        JobDto jobDto = null;
+        if (StringUtils.isBlank(authToken)){
+            log.error("Authorization header not found");
+            jobDto = jobService.retrieveJob(id);
+        } else {
+            String userId = null;
+            try{
+                userId = jwtTokenUtil.getUserNameFromJWT(authToken.replace("Bearer ",""));
+                jobDto = jobService.retrieveJob(id, userId);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        JobDto jobSummaryDto = jobService.retrieveJob(id, userId);
-
-        return ResponseEntity.ok(jobSummaryDto);
+        return ResponseEntity.ok(jobDto);
     }
 
     //search criteria
