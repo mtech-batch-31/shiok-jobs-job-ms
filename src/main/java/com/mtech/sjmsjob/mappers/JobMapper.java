@@ -6,6 +6,7 @@ import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,6 @@ public interface JobMapper {
                 .build();
     }
 
+    @Mapping(target = "applied", ignore = true)
     JobDto jobToJobDto(Job job);
 }
