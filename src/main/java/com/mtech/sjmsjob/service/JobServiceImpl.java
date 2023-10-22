@@ -86,9 +86,9 @@ public class JobServiceImpl implements JobService {
     }
 
     public JobDto retrieveJob(long id) {
+//        return null;
         Optional<Job> job = this.jobRepository.findById(id);
         if(job.isEmpty()) {
-//            return null;
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job with id "+ id + "not found");
         }
         return jobMapper.jobToJobDto(job.get());
