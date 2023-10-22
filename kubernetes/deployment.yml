@@ -43,6 +43,14 @@ spec:
             - name: spring.flyway.password
               value: ${DATASOURCE_SECRET}
 
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "250Mi"
+            limits:
+              cpu: "300m"
+              memory: "400Mi"
+
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
