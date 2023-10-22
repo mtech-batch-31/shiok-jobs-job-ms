@@ -47,7 +47,8 @@ public class JobController
                 userId = jwtTokenUtil.getUserNameFromJWT(authToken.replace("Bearer ",""));
                 jobDto = jobService.retrieveJob(id, userId);
             } catch (Exception e){
-                e.printStackTrace();
+                log.error(e.getMessage());
+//                e.printStackTrace();
             }
         }
         return ResponseEntity.ok(jobDto);
