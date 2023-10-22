@@ -21,6 +21,13 @@ spec:
       containers:
         - name: sj-jobs
           image: ${IMAGE_NAME}
+          resources:
+            requests:
+              cpu: 150m
+              memory: 350Mi
+            limits:
+              cpu: 500m
+              memory: 500Mi
           env:
             - name: spring.datasource.url
               value: ${DATASOURCE_URL}
@@ -43,13 +50,6 @@ spec:
             - name: spring.flyway.password
               value: ${DATASOURCE_SECRET}
 
-          resources:
-            requests:
-              cpu: "150m"
-              memory: "250Mi"
-            limits:
-              cpu: "300m"
-              memory: "400Mi"
 
           imagePullPolicy: Always
           ports:
