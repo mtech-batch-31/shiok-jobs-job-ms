@@ -1,9 +1,9 @@
 package com.mtech.sjmsjob.service;
 
+import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.mappers.JobMapper;
 import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
-import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.repository.JobApplicationRepository;
 import com.mtech.sjmsjob.repository.JobRepository;
 import io.micrometer.common.util.StringUtils;
@@ -12,7 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -86,7 +88,8 @@ public class JobServiceImpl implements JobService {
     public JobDto retrieveJob(long id) {
         Optional<Job> job = this.jobRepository.findById(id);
         if(job.isEmpty()) {
-            return null;
+//            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job with id "+ id + "not found");
         }
         return jobMapper.jobToJobDto(job.get());
     }

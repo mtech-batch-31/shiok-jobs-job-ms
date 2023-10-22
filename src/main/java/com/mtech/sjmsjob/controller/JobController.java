@@ -58,7 +58,6 @@ public class JobController
     //fulltext search for job title, company, job summary, skill
     //defined search for salary range, employee type, location
     @GetMapping()
-
     public ResponseEntity<JobListingDto> Search(@RequestParam(defaultValue = "0") int index,
                                                 @RequestParam(defaultValue = "10") int pageSize,
                                                 @RequestParam(defaultValue = "posted_date|desc") String[] sort,

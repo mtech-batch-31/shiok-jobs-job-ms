@@ -33,4 +33,10 @@ class JobControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void givenJobId_returnSuccessfulResponse_auth() throws Exception {
+        mockMvc.perform(get("/v1/jobs/auth/1"))
+                .andExpect(status().isOk());
+    }
+
 }
