@@ -21,8 +21,8 @@ begin
 		RETURN QUERY
 SELECT DISTINCT j.*
 FROM sjmsjob.job j
-   , to_tsvector(j.job_title || ' ' || j.job_summary) as searched
-   , to_tsquery('english', keywords_input) query
+   , to_tsvector(j.job_title || ' ' || j.job_summary || ' ' || j.company_name) as searched
+   , to_tsquery(keywords_input) query
    , ts_rank(to_tsvector(j.job_title || ' ' || j.job_summary || ' ' || j.company_name), query) as search_rank
    , job_skills s
 WHERE j.id = s.id AND search_rank > 0
