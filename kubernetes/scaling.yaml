@@ -1,7 +1,7 @@
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: sj-ms-autoscaling
+  name: sj-jobs-autoscaling
   namespace: sj-ns
 spec:
   scaleTargetRef:
@@ -9,5 +9,11 @@ spec:
     kind: Deployment
     name: sj-jobs
   minReplicas: 1
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 50
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

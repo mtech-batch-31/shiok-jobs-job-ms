@@ -1,6 +1,7 @@
 package com.mtech.sjmsjob.controller;
 
 import com.mtech.sjmsjob.service.JobApplicationService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/jobs")
 public class JobApplicationController {
@@ -37,7 +39,8 @@ public class JobApplicationController {
             jobApplService.applyJob(UUID.fromString(accountUuid), jobIdval);
         } catch(Exception ex)
         {
-            ex.printStackTrace();
+//            ex.printStackTrace();
+            log.error(ex.getMessage());
             return ResponseEntity.internalServerError().body(false);
         }
         return ResponseEntity.ok("Job applied successfully");

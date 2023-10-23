@@ -1,6 +1,7 @@
 package com.mtech.sjmsjob.controller;
 
 import com.mtech.sjmsjob.service.JobServiceImpl;
+import com.mtech.sjmsjob.util.JwtTokenUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +18,9 @@ class JobControllerTest {
 
     @MockBean
     private JobServiceImpl jobService;
+    @MockBean
+    private JwtTokenUtil jwtTokenUtil;
+
     @Test
     void givenEmptySearchCriteria_returnSuccessfulResponse() throws Exception {
         mockMvc.perform(get("/v1/jobs"))
@@ -26,6 +30,12 @@ class JobControllerTest {
     @Test
     void givenJobId_returnSuccessfulResponse() throws Exception {
         mockMvc.perform(get("/v1/jobs/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenJobId_returnSuccessfulResponse_auth() throws Exception {
+        mockMvc.perform(get("/v1/jobs/auth/1"))
                 .andExpect(status().isOk());
     }
 

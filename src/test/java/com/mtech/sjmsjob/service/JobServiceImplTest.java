@@ -1,9 +1,11 @@
 package com.mtech.sjmsjob.service;
 
 import com.mtech.sjmsjob.entity.Job;
+import com.mtech.sjmsjob.entity.JobApplication;
 import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.model.JobSummaryDto;
+import com.mtech.sjmsjob.repository.JobApplicationRepository;
 import com.mtech.sjmsjob.repository.JobRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,8 @@ class JobServiceImplTest {
 
     @Mock
     private JobRepository jobRepository;
+    @Mock
+    private JobApplicationRepository jobApplicationRepository;
 
     private ArrayList<Job> testJobListing;
 
@@ -172,6 +176,20 @@ class JobServiceImplTest {
 
         // When
         JobDto jobDto = jobServiceImpl.retrieveJob(1L );
+
+        // Then
+        Assertions.assertNotNull(jobDto);
+    }
+
+    @Test
+    void givenIdAndUserId_ReturnJob() {
+        // Given
+        UUID uuid = UUID.randomUUID();
+        String uuidString = uuid.toString();
+        Mockito.when(jobRepository.findById(1L)).thenReturn(Optional.of(new Job()));
+        Mockito.when(jobApplicationRepository.findByUserIdAndJobId(uuid, 1L)).thenReturn(Optional.of(List.of(new JobApplication())));
+        // When
+        JobDto jobDto = jobServiceImpl.retrieveJob(1L ,uuidString);
 
         // Then
         Assertions.assertNotNull(jobDto);

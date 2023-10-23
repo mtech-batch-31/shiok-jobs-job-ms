@@ -3,26 +3,48 @@ package com.mtech.sjmsjob.controller;
 import com.mtech.sjmsjob.model.JobDto;
 import com.mtech.sjmsjob.model.JobListingDto;
 import com.mtech.sjmsjob.service.JobService;
+import com.mtech.sjmsjob.util.JwtTokenUtil;
+import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/jobs")
 public class JobController
 {
     private final JobService jobService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public JobController(JobService jobService){
+    public JobController(JobService jobService, JwtTokenUtil jwtTokenUtil){
         this.jobService = jobService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobDto> retrieveJob(@PathVariable long id) {
-        JobDto jobSummaryDto = jobService.retrieveJob(id);
-        return ResponseEntity.ok(jobSummaryDto);
+    public ResponseEntity<JobDto> retrieveJobById(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+        log.info("retrieveJobById, headers={}, id={}",headers,id);
+        JobDto jobDto = jobService.retrieveJob(id);
+        return ResponseEntity.ok(jobDto);
+    }
+
+    @GetMapping("/auth/{id}")
+    public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+        log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers, id);
+        String userId = headers.getFirst("user-id");
+        JobDto jobDto = null;
+        if (StringUtils.isBlank(userId)){
+            log.error("user-id header not found");
+            jobDto = jobService.retrieveJob(id);
+        } else {
+            jobDto = jobService.retrieveJob(id, userId);
+        }
+        return ResponseEntity.ok(jobDto);
     }
 
     //search criteria
@@ -30,7 +52,6 @@ public class JobController
     //fulltext search for job title, company, job summary, skill
     //defined search for salary range, employee type, location
     @GetMapping()
-
     public ResponseEntity<JobListingDto> Search(@RequestParam(defaultValue = "0") int index,
                                                 @RequestParam(defaultValue = "10") int pageSize,
                                                 @RequestParam(defaultValue = "posted_date|desc") String[] sort,

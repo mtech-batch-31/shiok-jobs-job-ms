@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 public interface JobService {
     JobListingDto listJobs(int index, int pageSize, String[] sort);
 
+    JobDto retrieveJob(long id, String userId);
+
     JobDto retrieveJob(long id);
 
     //JobListingDto searchJobs(int index, int pageSize, String[] sort, String keyWords, String[] employmentType);

@@ -3,7 +3,9 @@ package com.mtech.sjmsjob.util;
 import java.util.Base64;
 
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtTokenUtil {
 
     public String getUserNameFromJWT(String token) {
