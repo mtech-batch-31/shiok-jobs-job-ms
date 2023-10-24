@@ -31,6 +31,8 @@ public class JobApplication {
 
     private String status;
 
+    private Boolean seekerStatus;
+
     @Version
     private Integer version;
 
