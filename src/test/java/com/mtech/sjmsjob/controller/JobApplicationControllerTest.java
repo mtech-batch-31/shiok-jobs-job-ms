@@ -1,6 +1,8 @@
+/*
+* API for listing and creating job applications
+ */
 package com.mtech.sjmsjob.controller;
 
-import com.mtech.sjmsjob.entity.JobApplication;
 import com.mtech.sjmsjob.service.JobApplicationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class JobApplicationControllerTest {
     private JobApplicationService jobApplicationService;
 
     @Test
-    void givenApplyJobWhenInValidJobId_return404Response() throws Exception{
+    void givenApplyJobWhenInValidJobId_return404Response() throws Exception {
 
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3"))
@@ -33,7 +35,7 @@ public class JobApplicationControllerTest {
 
     }
     @Test
-    void givenApplyJobWhenInValidUserId_return404Response() throws Exception{
+    void givenApplyJobWhenInValidUserId_return404Response() throws Exception {
 
         mockMvc.perform(post("/v1/jobs/apply").content("1"))
                 .andExpect(status().isBadRequest());
@@ -46,7 +48,7 @@ public class JobApplicationControllerTest {
     }
 
     @Test
-    void givenApplyJobWhenValidJobId_returnSuccessfulResponse() throws Exception{
+    void givenApplyJobWhenValidJobId_returnSuccessfulResponse() throws Exception {
 
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")

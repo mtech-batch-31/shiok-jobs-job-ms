@@ -45,5 +45,7 @@ public class JobApplication {
 
     @CreationTimestamp
     private Date createdTime;
+
+    private Date seekerStatusLastUpdatedDate ;
 }
 
