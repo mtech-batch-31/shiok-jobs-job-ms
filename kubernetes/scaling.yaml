@@ -16,4 +16,4 @@ spec:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageValue: 200Mi
