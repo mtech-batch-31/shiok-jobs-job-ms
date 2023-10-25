@@ -42,6 +42,8 @@ public class JobApplicationServiceImpl implements JobApplicationService{
             jobAppl.setCreatedTime(now);
             jobAppl.setLastUpdatedBy(userId.toString());
             jobAppl.setLastUpdatedTime(new Timestamp(now.getTime()));
+            jobAppl.setSeekerStatus(true);
+            jobAppl.setSeekerStatusLastUpdatedDate(new Timestamp(now.getTime()));
 
             return jobApplRepository.save(jobAppl);
         }
