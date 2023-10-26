@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: sj-jobs
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 4
   metrics:
     - type: Resource
       resource:
@@ -17,3 +17,10 @@ spec:
         target:
           type: Utilization
           averageUtilization: 90
+
+  behavior:
+    scaleDown:
+      policies:
+        - periodSeconds: 10
+          type: Pod
+          value: 1
