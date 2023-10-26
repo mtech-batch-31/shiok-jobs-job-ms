@@ -22,8 +22,12 @@ spec:
         - name: sj-jobs
           image: ${IMAGE_NAME}
           resources:
+            requests:
+              memory: 256Mi
+              cpu: 500m
             limits:
               memory: 256Mi
+              cpu: 500m
 
           env:
             - name: spring.datasource.url
