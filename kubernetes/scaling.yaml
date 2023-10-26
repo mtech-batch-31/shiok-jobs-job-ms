@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: sj-jobs
   minReplicas: 1
-  maxReplicas: 4
+  maxReplicas: 5
   metrics:
     - type: Resource
       resource:
