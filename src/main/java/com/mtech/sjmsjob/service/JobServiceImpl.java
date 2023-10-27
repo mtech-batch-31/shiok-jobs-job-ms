@@ -36,8 +36,9 @@ public class JobServiceImpl implements JobService {
     }
 
     public JobListingDto listJobs(int index, int pageSize, String[] sort) {
-        Page<Job> jobs = this.jobRepository.findAll(getPagingRequest(index,pageSize, sort ));
-        return JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
+//        Page<Job> jobs = this.jobRepository.findAll(getPagingRequest(index,pageSize, sort ));
+//        return JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
+        return null;
     }
 
     public JobListingDto searchJob(int index, int pageSize, String[] sort, String keyWords, String[] employmentType
