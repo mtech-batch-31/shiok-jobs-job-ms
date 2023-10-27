@@ -104,7 +104,7 @@ private excludedClassFilesForReport(classDirectories) {
 	classDirectories.setFrom(files(classDirectories.files.collect {
 		fileTree(dir: it, exclude: [
 				'**/entity/*.class',
-				'**/model/**/*.class',
+				'**/model/*.class',
 				'**/Application.class'
 		])
 	}))
