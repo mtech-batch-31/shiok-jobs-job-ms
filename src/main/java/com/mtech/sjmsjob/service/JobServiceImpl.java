@@ -1,5 +1,6 @@
 package com.mtech.sjmsjob.service;
 
+import com.mtech.sjmsjob.config.CacheConfig;
 import com.mtech.sjmsjob.entity.Job;
 import com.mtech.sjmsjob.mappers.JobMapper;
 import com.mtech.sjmsjob.model.JobDto;
@@ -8,6 +9,7 @@ import com.mtech.sjmsjob.repository.JobApplicationRepository;
 import com.mtech.sjmsjob.repository.JobRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -85,7 +87,9 @@ public class JobServiceImpl implements JobService {
         return jobDto;
     }
 
+    @Cacheable(value = CacheConfig.JOBS, key = "#id")
     public JobDto retrieveJob(long id) {
+        log.debug("retrieveJob for jobId={}", id);
         Optional<Job> job = this.jobRepository.findById(id);
         if(job.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job with id "+ id + "not found");
