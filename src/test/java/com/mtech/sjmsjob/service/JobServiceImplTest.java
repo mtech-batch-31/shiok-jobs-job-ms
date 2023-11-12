@@ -102,6 +102,16 @@ class JobServiceImplTest {
         JobSummaryDto record3 = data.iterator().next();
         Assertions.assertTrue(record1.getPostedAt().compareTo(record2.getPostedAt()) >= 0);
         Assertions.assertTrue(record2.getPostedAt().compareTo(record3.getPostedAt()) >= 0);
+        Assertions.assertEquals(1L, record1.getId());
+        Assertions.assertEquals("companyA", record1.getCompany());
+        Assertions.assertEquals("companya.svg", record1.getLogo());
+        Assertions.assertEquals("Developer", record1.getJobTitle());
+        Assertions.assertEquals("10000 - 15000", record1.getSalaryRange());
+        Assertions.assertEquals("junior", record1.getLevel());
+        Assertions.assertEquals("part-time", record1.getEmploymentType());
+        Assertions.assertEquals("hybrid", record1.getLocation());
+        Assertions.assertEquals(1, record1.getSkills().size());
+        Assertions.assertEquals("microsoft word", record1.getSkills().get(0));
     }
 
 //    @Test
