@@ -29,13 +29,11 @@ public class JobApplicationController {
             Pattern UUID_REGEX =
                     Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
-            if(jobId.isEmpty())
+            if(jobId.isEmpty() || !StringUtils.isNumeric(jobId))
                 return ResponseEntity.badRequest().body("Invalid Job Id");
-            if(!StringUtils.isNumeric(jobId))
-                return ResponseEntity.badRequest().body("Invalid Job Id");
-            if(accountUuid.isEmpty() && !UUID_REGEX.matcher(accountUuid).matches())
+            if(accountUuid.isEmpty() || !UUID_REGEX.matcher(accountUuid).matches())
                 return ResponseEntity.badRequest().body("Missing or Invalid User Id");
-            long jobIdval = Long.valueOf(jobId);
+            long jobIdval = Long.parseLong(jobId);
             jobApplService.applyJob(UUID.fromString(accountUuid), jobIdval);
         } catch(Exception ex)
         {
