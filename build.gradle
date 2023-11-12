@@ -105,12 +105,10 @@ jacocoTestReport {
 private excludedClassFilesForReport(classDirectories) {
 	classDirectories.setFrom(files(classDirectories.files.collect {
 		fileTree(dir: it, exclude: [
-				'**/config/**',
-				'**/entity/**',
-				'**/model/**',
-				'**/mappers/**',
-				'**/util/**',
-				'**/Application**'
+				'**/config/*.class',
+				'**/entity/*.class',
+				'**/model/*.class',
+				'**/Application.class'
 		])
 	}))
 }
