@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM openjdk:17
 
 COPY build/libs/shiok_jobs_job_ms.jar /shiok_jobs_job_ms.jar
 COPY src/main/resources/application.properties /application.properties

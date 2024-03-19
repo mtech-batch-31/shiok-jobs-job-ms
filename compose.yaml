@@ -2,14 +2,25 @@ services:
   db:
     image: 'postgres:16.0-alpine'
     environment:
-      - 'POSTGRES_PASSWORD=_p@ssw0rd'
+      POSTGRES_USER: sjmsjob
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: sjdb
     ports:
       - '5432:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./initdata:/docker-entrypoint-initdb.d
-    networks:
-      - springboot-db-network
+
+  adminer:
+    depends_on:
+      - db
+    container_name: adminer-job
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - 4000:8080
 
   ms:
     depends_on:
@@ -23,13 +34,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sjdb
       SPRING_FLYWAY_LOCATIONS: classpath:db/migration
       sjmsjob.companyLogoUrl: https://shiok-jobs-company-images.s3.ap-southeast-1.amazonaws.com/images/
-    restart: on-failure
-    networks:
-      - springboot-db-network
+      DB_PASSWORD: secret
+    # restart: on-failure
 
-networks:
-  springboot-db-network:
-    driver: bridge
 
 volumes:
   db-data:
