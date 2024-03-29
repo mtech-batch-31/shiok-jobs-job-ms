@@ -27,7 +27,7 @@ class JobControllerTest {
 
     @Test
     void givenJobId_returnSuccessfulResponse() throws Exception {
-        mockMvc.perform(get("/v1/jobs/1"))
+        mockMvc.perform(get("/v1/jobs/details?id=1"))
                 .andExpect(status().isOk());
     }
 

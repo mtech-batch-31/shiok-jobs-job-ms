@@ -28,8 +28,8 @@ public class JobController
         this.jobService = jobService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<JobDto> retrieveJobById(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+    @GetMapping("/details")
+    public ResponseEntity<JobDto> retrieveJobById(@RequestHeader HttpHeaders headers, @RequestParam long id) {
         log.info("retrieveJobById, headers={}, id={}",headers,id);
         JobDto jobDto = jobService.retrieveJob(id);
         return ResponseEntity.ok(jobDto);
