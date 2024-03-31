@@ -84,6 +84,7 @@ sonarqube {
 		property "sonar.organization", "mtech-batch-31"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		property 'sonar.coverage.exclusions', "**/entity/**, **/model/**, **/Application*, **/config/*.java"
 	}
 }
 
