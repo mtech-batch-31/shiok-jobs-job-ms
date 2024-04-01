@@ -1,5 +1,6 @@
 package com.mtech.sjmsjob.controller;
 
+import com.mtech.sjmsjob.model.JobApplyRequest;
 import com.mtech.sjmsjob.service.JobApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,18 +24,20 @@ public class JobApplicationController {
         this.jobApplService = jobApplService;
     }
     @PostMapping("/apply")
-    public ResponseEntity applyJob(@RequestHeader("user-id") String accountUuid, @RequestBody String jobId) throws IllegalArgumentException {
+    public ResponseEntity applyJob(@RequestHeader("user-id") String accountUuid, @RequestBody JobApplyRequest jobRequest) throws IllegalArgumentException {
+
+        long jobId = jobRequest.getID();
         try
         {
             Pattern UUID_REGEX =
                     Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
-            if(jobId.isEmpty() || !StringUtils.isNumeric(jobId))
-                return ResponseEntity.badRequest().body("Invalid Job Id");
+            if(jobId <= 0)
+                return ResponseEntity.badRequest().body("Missing or Invalid Job Id");
             if(accountUuid.isEmpty() || !UUID_REGEX.matcher(accountUuid).matches())
                 return ResponseEntity.badRequest().body("Missing or Invalid User Id");
-            long jobIdval = Long.parseLong(jobId);
-            jobApplService.applyJob(UUID.fromString(accountUuid), jobIdval);
+
+            jobApplService.applyJob(UUID.fromString(accountUuid), jobId);
         } catch(Exception ex)
         {
 //            ex.printStackTrace();

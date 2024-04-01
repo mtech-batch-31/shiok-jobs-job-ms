@@ -3,12 +3,17 @@
  */
 package com.mtech.sjmsjob.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mtech.sjmsjob.model.JobApplyRequest;
 import com.mtech.sjmsjob.service.JobApplicationService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -26,6 +31,22 @@ public class JobApplicationControllerTest {
     @MockBean
     private JobApplicationService jobApplicationService;
 
+    private String ValidJsonString;
+
+    private String InvalidJsonString;
+
+    @BeforeEach
+    void setUp() throws JsonProcessingException {
+        JobApplyRequest jobApplyRequest = new JobApplyRequest();
+        jobApplyRequest.setID(1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ValidJsonString = objectMapper.writeValueAsString(jobApplyRequest);
+
+        JobApplyRequest invalidJsonApplyRequest = new JobApplyRequest();
+        invalidJsonApplyRequest.setID(0);
+        InvalidJsonString = objectMapper.writeValueAsString(invalidJsonApplyRequest);
+    }
+
     @Test
     void givenApplyJobWhenInValidJobId_return404Response() throws Exception {
 
@@ -35,8 +56,10 @@ public class JobApplicationControllerTest {
 
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
-                        .content("abc"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(InvalidJsonString))
                 .andExpect(status().isBadRequest());
+
 
     }
     @Test
@@ -47,7 +70,8 @@ public class JobApplicationControllerTest {
 
         mockMvc.perform(post("/v1/jobs/apply").content("1")
                         .header("user-id", "somethinginvalid")
-                        .content("abc"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ValidJsonString))
                 .andExpect(status().isBadRequest());
 
     }
@@ -57,7 +81,8 @@ public class JobApplicationControllerTest {
 
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
-                        .content("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ValidJsonString))
                 .andExpect(status().isOk());
     }
 
@@ -66,14 +91,17 @@ public class JobApplicationControllerTest {
 
 
         MvcResult result = mockMvc.perform(post("/v1/jobs/apply")
-                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3").content(" "))
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"\"}"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
         String actual = result.getResponse().getContentAsString();
 
-        Assertions.assertEquals("Invalid Job Id", actual);
+        Assertions.assertEquals("Missing or Invalid Job Id", actual);
     }
 
     @Test
@@ -81,7 +109,8 @@ public class JobApplicationControllerTest {
 
         MvcResult result = mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", " ")
-                        .content("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ValidJsonString))
                 .andExpect(status().isBadRequest()).andReturn();
 
         String actual = result.getResponse().getContentAsString();
@@ -96,7 +125,10 @@ public class JobApplicationControllerTest {
 
         given(jobApplicationService.applyJob(anyUserId, anyJobId)).willThrow(new IllegalArgumentException("job exists"));
 
-        mockMvc.perform(post("/v1/jobs/apply").header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3").content("1"))
+        mockMvc.perform(post("/v1/jobs/apply")
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ValidJsonString))
                 .andExpect(status().isInternalServerError());
     }
 

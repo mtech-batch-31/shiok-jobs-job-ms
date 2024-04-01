@@ -46,6 +46,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	//testImplementation 'org.springframework.security:spring-security-test'
+
+	runtimeOnly "org.springframework.boot:spring-boot-starter-actuator"
 }
 
 tasks.named('test') {
@@ -82,6 +84,7 @@ sonarqube {
 		property "sonar.organization", "mtech-batch-31"
 		property "sonar.host.url", "https://sonarcloud.io"
 		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		property 'sonar.coverage.exclusions', "**/entity/**, **/model/**, **/Application*, **/config/*.java"
 	}
 }
 
