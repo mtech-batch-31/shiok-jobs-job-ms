@@ -1,12 +1,16 @@
 package com.mtech.sjmsjob.model;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+
+@Data
 public class JobApplyRequest {
-    private long id;
 
-    @JsonProperty("id")
-    public long getID() { return id; }
-    @JsonProperty("id")
-    public void setID(long value) { this.id = value; }
+    @NotNull(message= "id cannot be null")
+    @Min(value = 1, message = "invalid id")
+    private Long id;
+
 }
 

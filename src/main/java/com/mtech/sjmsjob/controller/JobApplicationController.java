@@ -3,8 +3,8 @@ package com.mtech.sjmsjob.controller;
 import com.mtech.sjmsjob.model.JobApplyRequest;
 import com.mtech.sjmsjob.service.JobApplicationService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,9 +24,9 @@ public class JobApplicationController {
         this.jobApplService = jobApplService;
     }
     @PostMapping("/apply")
-    public ResponseEntity applyJob(@RequestHeader("user-id") String accountUuid, @RequestBody JobApplyRequest jobRequest) throws IllegalArgumentException {
+    public ResponseEntity applyJob(@RequestHeader("user-id") String accountUuid, @Validated @RequestBody JobApplyRequest jobRequest) throws IllegalArgumentException {
 
-        long jobId = jobRequest.getID();
+        long jobId = jobRequest.getId();
         try
         {
             Pattern UUID_REGEX =

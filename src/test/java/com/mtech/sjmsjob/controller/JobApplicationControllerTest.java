@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.BDDMockito.given;
 @WebMvcTest(JobApplicationController.class)
-public class JobApplicationControllerTest {
+class JobApplicationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -38,12 +38,12 @@ public class JobApplicationControllerTest {
     @BeforeEach
     void setUp() throws JsonProcessingException {
         JobApplyRequest jobApplyRequest = new JobApplyRequest();
-        jobApplyRequest.setID(1);
+        jobApplyRequest.setId(1L);
         ObjectMapper objectMapper = new ObjectMapper();
         ValidJsonString = objectMapper.writeValueAsString(jobApplyRequest);
 
         JobApplyRequest invalidJsonApplyRequest = new JobApplyRequest();
-        invalidJsonApplyRequest.setID(0);
+        invalidJsonApplyRequest.setId(0L);
         InvalidJsonString = objectMapper.writeValueAsString(invalidJsonApplyRequest);
     }
 
@@ -101,7 +101,7 @@ public class JobApplicationControllerTest {
 
         String actual = result.getResponse().getContentAsString();
 
-        Assertions.assertEquals("Missing or Invalid Job Id", actual);
+        Assertions.assertEquals("{\"returnCode\":\"400\",\"message\":\"id cannot be null\"}", actual);
     }
 
     @Test
