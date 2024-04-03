@@ -5,6 +5,7 @@ package com.mtech.sjmsjob.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mtech.sjmsjob.model.JobApplyDto;
 import com.mtech.sjmsjob.model.JobApplyRequest;
 import com.mtech.sjmsjob.service.JobApplicationService;
 import org.junit.jupiter.api.Assertions;
@@ -115,7 +116,7 @@ class JobApplicationControllerTest {
 
         String actual = result.getResponse().getContentAsString();
 
-        Assertions.assertEquals("Missing or Invalid User Id", actual);
+        Assertions.assertEquals("{\"status\":\"Fail\",\"message\":\"Missing or Invalid User Id\"}", actual);
     }
 
     @Test
