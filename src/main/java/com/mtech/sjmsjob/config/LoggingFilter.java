@@ -40,8 +40,17 @@ public class LoggingFilter implements Filter {
 
         filterChain.doFilter(bufferedRequest, servletResponse);
         // log information regarding the httpServletResponse like status code, etc
-        log.info("RESPONSE, path: {}, method: {}, status: {}",request.getRequestURL(), request.getMethod(), response.getStatus());
+        Map<String, String> responseHeaders = extractResponseHeaders(response);
+        log.info("RESPONSE, path: {}, method: {}, headers: {}, status: {}",request.getRequestURL(), request.getMethod(), responseHeaders, response.getStatus());
 
+    }
+
+    private Map<String, String> extractResponseHeaders(HttpServletResponse response) {
+        Map<String, String> headers = new HashMap<>();
+        for (String headerName : response.getHeaderNames()) {
+            headers.put(headerName, response.getHeader(headerName));
+        }
+        return headers;
     }
 
     private Map<String, String> extractHeaders(HttpServletRequest request) {
