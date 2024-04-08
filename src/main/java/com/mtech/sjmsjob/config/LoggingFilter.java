@@ -120,7 +120,7 @@ public class LoggingFilter implements Filter {
         }
 
         @Override
-        public int read() throws IOException {
+        public int read() {
             return bais.read();
         }
 
@@ -136,7 +136,7 @@ public class LoggingFilter implements Filter {
 
         @Override
         public void setReadListener(ReadListener listener) {
-
+            // nothing needed
         }
 
     }
