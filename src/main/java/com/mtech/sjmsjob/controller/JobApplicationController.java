@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-import java.util.regex.Pattern;
-
 @Slf4j
 @RestController
 @RequestMapping("/v1/jobs")
@@ -25,22 +22,22 @@ public class JobApplicationController {
         this.jobApplService = jobApplService;
     }
     @PostMapping("/apply")
-    public ResponseEntity<JobApplyDto> applyJob(@RequestHeader("user-id") String accountUuid, @Validated @RequestBody JobApplyRequest jobRequest) throws IllegalArgumentException {
+    public ResponseEntity<JobApplyDto> applyJob(@RequestHeader("user-id") String userId, @Validated @RequestBody JobApplyRequest jobRequest) throws IllegalArgumentException {
 
         long jobId = jobRequest.getId();
         try
         {
-            Pattern UUID_REGEX =
-                    Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-            Pattern UUID_COGNITO_REGEX =
-                    Pattern.compile("^[a-zA-F]{6}_[0-9]{21}$");
+//            Pattern UUID_REGEX =
+//                    Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+//            Pattern UUID_COGNITO_REGEX =
+//                    Pattern.compile("^[a-zA-F]{6}_[0-9]{21}$");
 
             if(jobId <= 0)
                 return ResponseEntity.badRequest().body(JobApplyDto.builder().status("Fail").message("Missing or Invalid Job Id").build());
-            if(accountUuid.isEmpty() || !(UUID_REGEX.matcher(accountUuid).matches() || UUID_COGNITO_REGEX.matcher(accountUuid).matches()))
+            if(userId.isBlank())
                 return ResponseEntity.badRequest().body(JobApplyDto.builder().status("Fail").message("Missing or Invalid User Id").build());
 
-            jobApplService.applyJob(UUID.fromString(accountUuid), jobId);
+            jobApplService.applyJob(userId, jobId);
         } catch(Exception ex)
         {
             log.error(ex.getMessage());
