@@ -207,17 +207,17 @@ jobs:
           path: |
             build/sonar/report-task.txt
 
-#  zap_scan:
-#    needs: deploy_to_eks
-#    runs-on: ubuntu-latest
-#    name: Zap Scan
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          ref: main
-#
-#      - name: ZAP Scan
-#        uses: zaproxy/action-full-scan@v0.4.0
-#        with:
-#          target: 'http://recycler-service-1183649220.ap-southeast-1.elb.amazonaws.com/'
+  zap_scan:
+    needs: deploy_to_eks
+    runs-on: ubuntu-latest
+    name: Zap Scan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: 'https://j0o5s8d9pe.execute-api.ap-southeast-1.amazonaws.com/shiokjobs/jobs/'
