@@ -13,7 +13,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Allow requests from any origin to the following endpoints
         registry.addMapping("/**")
-                .allowedOrigins("https://d2loqognvf0v5n.cloudfront.net") // You can specify specific origins instead of "*"
+                .allowedOrigins("https://d2loqognvf0v5n.cloudfront.net", "http://localhost:3000") // You can specify specific origins instead of "*"
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(false) // You can set this to true if you need credentials (cookies, etc.) to be included in the request.
                 .maxAge(3600); // Cache preflight request for 1 hour
