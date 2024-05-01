@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-public class JobApplicationServiceImplTest {
+class JobApplicationServiceImplTest {
 
     @Mock
     private JobApplicationRepository jobApplyRepository;
@@ -37,7 +37,7 @@ public class JobApplicationServiceImplTest {
     @Test
     void givenJobSeekersApplyJob_ReturnAppliedJob() {
         //given
-        var userId = UUID.randomUUID();
+        var userId = UUID.randomUUID().toString();
         long jobId = 1L;
         var job = new Job();
         var jobApplications = new ArrayList<JobApplication>();
@@ -56,7 +56,7 @@ public class JobApplicationServiceImplTest {
     @Test
     void givenJobSeekersApplyJob_SaveToDatabaseAndReturnAppliedJob() {
         //given
-        var userId = UUID.randomUUID();
+        var userId = UUID.randomUUID().toString();
         long jobId = 1L;
         var job = new Job();
         job.setJobTitle("job title");
@@ -86,7 +86,7 @@ public class JobApplicationServiceImplTest {
     void givenJobSeekersApplyJobAndJobDoesNotExist_ThrowIllegalArgumentException() {
         //given
         var jobApplications = new ArrayList<JobApplication>();
-        var userId = UUID.randomUUID();
+        var userId = UUID.randomUUID().toString();
         long jobId = 1L;
 
         //when

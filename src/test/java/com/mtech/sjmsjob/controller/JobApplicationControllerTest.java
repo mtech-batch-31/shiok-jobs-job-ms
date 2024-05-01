@@ -18,8 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import java.util.UUID;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.BDDMockito.given;
@@ -31,21 +29,32 @@ class JobApplicationControllerTest {
     @MockBean
     private JobApplicationService jobApplicationService;
 
-    private String ValidJsonString;
+    private String validJsonString;
 
-    private String InvalidJsonString;
+    private String invalidJsonString;
 
     @BeforeEach
     void setUp() throws JsonProcessingException {
         JobApplyRequest jobApplyRequest = new JobApplyRequest();
         jobApplyRequest.setId(1L);
         ObjectMapper objectMapper = new ObjectMapper();
-        ValidJsonString = objectMapper.writeValueAsString(jobApplyRequest);
+        validJsonString = objectMapper.writeValueAsString(jobApplyRequest);
 
         JobApplyRequest invalidJsonApplyRequest = new JobApplyRequest();
         invalidJsonApplyRequest.setId(0L);
-        InvalidJsonString = objectMapper.writeValueAsString(invalidJsonApplyRequest);
+        invalidJsonString = objectMapper.writeValueAsString(invalidJsonApplyRequest);
     }
+
+    @Test
+    void givenApplyJobWhenValidJobId_returnSuccessfulResponse() throws Exception {
+
+        mockMvc.perform(post("/v1/jobs/apply")
+                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validJsonString))
+                .andExpect(status().isOk());
+    }
+
 
     @Test
     void givenApplyJobWhenInValidJobId_return404Response() throws Exception {
@@ -57,34 +66,12 @@ class JobApplicationControllerTest {
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(InvalidJsonString))
+                        .content(invalidJsonString))
                 .andExpect(status().isBadRequest());
 
 
     }
-    @Test
-    void givenApplyJobWhenInValidUserId_return404Response() throws Exception {
 
-        mockMvc.perform(post("/v1/jobs/apply").content("1"))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/v1/jobs/apply").content("1")
-                        .header("user-id", "somethinginvalid")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(ValidJsonString))
-                .andExpect(status().isBadRequest());
-
-    }
-
-    @Test
-    void givenApplyJobWhenValidJobId_returnSuccessfulResponse() throws Exception {
-
-        mockMvc.perform(post("/v1/jobs/apply")
-                        .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(ValidJsonString))
-                .andExpect(status().isOk());
-    }
 
     @Test
     void givenApplyJobWhenEmptyOrInvalidJobId_returnBadRequestResponse() throws Exception {
@@ -110,17 +97,17 @@ class JobApplicationControllerTest {
         MvcResult result = mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", " ")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(ValidJsonString))
+                        .content(validJsonString))
                 .andExpect(status().isBadRequest()).andReturn();
 
         String actual = result.getResponse().getContentAsString();
 
-        Assertions.assertEquals("Missing or Invalid User Id", actual);
+        Assertions.assertEquals("{\"status\":\"Fail\",\"message\":\"Missing or Invalid User Id\"}", actual);
     }
 
     @Test
     void givenApplyJobWhenThrowExceptionsFromService_returnInternalServerErrorResponse() throws Exception {
-        UUID anyUserId = UUID.fromString("3af5923e-aeee-4c79-bb2d-4cbea3e03bd3");
+        String anyUserId ="3af5923e-aeee-4c79-bb2d-4cbea3e03bd3";
         long anyJobId = 1L;
 
         given(jobApplicationService.applyJob(anyUserId, anyJobId)).willThrow(new IllegalArgumentException("job exists"));
@@ -128,7 +115,7 @@ class JobApplicationControllerTest {
         mockMvc.perform(post("/v1/jobs/apply")
                         .header("user-id", "3af5923e-aeee-4c79-bb2d-4cbea3e03bd3")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(ValidJsonString))
+                        .content(validJsonString))
                 .andExpect(status().isInternalServerError());
     }
 

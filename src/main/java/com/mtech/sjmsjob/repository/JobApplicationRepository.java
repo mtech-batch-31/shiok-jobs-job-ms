@@ -5,8 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface JobApplicationRepository extends CrudRepository<JobApplication, Long> {
-    Optional<List<JobApplication>> findByUserIdAndJobId(UUID userId, long job);
+    Optional<List<JobApplication>> findByUserIdAndJobId(String userId, long job);
 }

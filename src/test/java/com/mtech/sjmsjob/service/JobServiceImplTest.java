@@ -197,7 +197,7 @@ class JobServiceImplTest {
         UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString();
         Mockito.when(jobRepository.findById(1L)).thenReturn(Optional.of(new Job()));
-        Mockito.when(jobApplicationRepository.findByUserIdAndJobId(uuid, 1L)).thenReturn(Optional.of(List.of(new JobApplication())));
+        Mockito.when(jobApplicationRepository.findByUserIdAndJobId(uuidString, 1L)).thenReturn(Optional.of(List.of(new JobApplication())));
         // When
         JobDto jobDto = jobServiceImpl.retrieveJob(1L ,uuidString);
 

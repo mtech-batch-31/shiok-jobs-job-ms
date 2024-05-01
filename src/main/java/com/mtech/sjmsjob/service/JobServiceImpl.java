@@ -86,7 +86,7 @@ public class JobServiceImpl implements JobService {
         JobDto jobDto = retrieveJob(jobId);
         jobDto.setApplied(false);
         if (jobDto!= null && !StringUtils.isBlank(userId)){
-            var applicationListOptional = jobApplicationRepository.findByUserIdAndJobId(UUID.fromString(userId), jobId);
+            var applicationListOptional = jobApplicationRepository.findByUserIdAndJobId(userId, jobId);
             if(applicationListOptional.isPresent() && !applicationListOptional.get().isEmpty()) {
                 jobDto.setApplied(true);
             }

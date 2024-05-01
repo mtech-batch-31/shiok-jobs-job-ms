@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,8 +34,8 @@ public class JobController
         return ResponseEntity.ok(jobDto);
     }
 
-    @GetMapping("/auth/{id}")
-    public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @PathVariable long id) {
+    @GetMapping("/auth/details")
+    public ResponseEntity<JobDto> retrieveJobByIdAuthenticated(@RequestHeader HttpHeaders headers, @RequestParam long id) {
         log.info("retrieveJobByIdAuthenticated, headers={}, id={}",headers, id);
         String userId = headers.getFirst("user-id");
         JobDto jobDto = null;
