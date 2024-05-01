@@ -46,9 +46,12 @@ public class JobServiceImpl implements JobService {
             , String[] workLocations, BigDecimal minimumSalary, String[] skills) {
         Page<Job> jobs;
         JobListingDto result = null;
-        String employmentTypesConcat = String.join("|",employmentType);
-        String workLocationsConcat = String.join("|",workLocations);
-        String skillsConcat = String.join("|",skills);
+
+        String employmentTypesConcat =sanitizedString( String.join("|",employmentType));
+        String workLocationsConcat = sanitizedString( String.join("|",workLocations));
+        String skillsConcat = sanitizedString( String.join("|",skills));
+
+        //sanitized searched word
 
         //replace spaces with | delimiter for fulltext search
         keyWords = keyWords.trim().replaceAll("\\s+", "|");
@@ -58,6 +61,10 @@ public class JobServiceImpl implements JobService {
             result = JobMapper.INSTANCE.pageJobToJobListingDto(jobs);
 
         return result;
+    }
+
+    private String sanitizedString(String strInput){
+        return strInput.replaceAll("[;/%!\\/]", "");
     }
     private Pageable getPagingRequest(int index, int pageSize, String[] sort){
         ArrayList<Sort.Order> sortOrder = new ArrayList<>();
